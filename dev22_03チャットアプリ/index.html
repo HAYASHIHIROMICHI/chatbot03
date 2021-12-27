@@ -83,41 +83,32 @@
       });
 
       // 受信処理
-      onChildAdded(dbRef, function (date) {
-        const msg = date.val();
-        const key = date.key;
-        let h = '<p>';
-        h += msg.uname;
-        h += '<br>';
-        h += msg.text;
-        h += '</p>';
-        $('#output').append(h);
-
-        // 削除処理
-        let hh = `
-        <div class="message" data-key=${key}>
-          <input type= "text" value = ${msg.uname}　class="uname"/>
-          <input type= "text" value = ${msg.text} class="text"/>
-          <p>${msg.uname}</p>
-          <p>${msg.text}</p>
-          <p class="update">更新</p>
-          <p class="delete">削除</p>
+      onChildAdded(dbRef, function (data) {
+        const msg = data.val();
+        const key = data.key;
+        let h = ` 
+        <div class="output_wrapper" data-key=${key}>  
+        <div class="output">
+        <p class="unamelist outputlist">${msg.uname}</p>
+        <p class="reviewlist outputlist">${msg.review}</p>
+        <p class="textlist outputlist">${msg.text}</p>
+        </div>
+        <i class="delete" id="delete">削除</i>
         </div>`;
-        //この一つの塊が「鍵」を表してる
-
-        $('#output').append(hh);
+        $('#output').append(h); //outputの最後に追加
       });
-      $(document).on('click', '.delete', function () {
-        // クリックされた鍵を取得する
-        var v = $(this).parent().data().key;
-        console.log(v, 'vvv'); //-MrWxLlpH8HdF7WXK_U9
-        //vは鍵
-        remove(ref(db, 'chat/' + v));
-        //htmlを消す方法
-        $(this).parent().remove();
+      // 削除処理
+
+      $(document).on('click', '#delete', function () {
+        let check = window.confirm('削除しますか？');
+        if ((check = true)) {
+          let v = $(this).parent().data().key;
+          remove(ref(db, 'chat/' + v));
+          $(this).parent().remove();
+        }
       });
 
-      // 更新
+      // 更新？できていない
       $(document).on('click', '.update', function () {
         var v = $(this).siblings('.uname').val();
 
